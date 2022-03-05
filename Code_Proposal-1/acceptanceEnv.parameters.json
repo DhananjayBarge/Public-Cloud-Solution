@@ -1,0 +1,277 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+
+        "networkInterfaceNameNginx": {
+            "value": "Acceptance-nginxnic"
+        },
+        "networkInterfaceNameMongo": {
+            "value": "Acceptance-mongodbnic"
+        },
+        "enableAcceleratedNetworking": {
+            "value": false
+        },
+        "networkSecurityGroupNamePrivate": {
+            "value": "Acceptance-nsg-priv"
+        },
+        "networkSecurityGroupNamePublic": {
+            "value": "Acceptance-nsg-pub"
+        },
+        "networkSecurityGroupRulesPrivate": {
+            "value": [
+                {
+                    "name": "SSH",
+                    "properties": {
+                        "priority": 300,
+                        "protocol": "TCP",
+                        "access": "Allow",
+                        "direction": "Inbound",
+                        "sourceAddressPrefix": "*",
+                        "sourcePortRange": "*",
+                        "destinationAddressPrefix": "*",
+                        "destinationPortRange": "22"
+                    }
+                },
+                {
+                    "name": "Http",
+                    "properties": {
+                        "priority": 302,
+                        "protocol": "TCP",
+                        "access": "Allow",
+                        "direction": "Inbound",
+                        "sourceAddressPrefix": "*",
+                        "sourcePortRange": "*",
+                        "destinationAddressPrefix": "*",
+                        "destinationPortRange": "80"
+                    }
+                },
+                {
+                    "name": "Https",
+                    "properties": {
+                        "priority": 304,
+                        "protocol": "TCP",
+                        "access": "Allow",
+                        "direction": "Inbound",
+                        "sourceAddressPrefix": "*",
+                        "sourcePortRange": "*",
+                        "destinationAddressPrefix": "*",
+                        "destinationPortRange": "443"
+                    }
+                },
+                {
+                    "name": "MongoPort",
+                    "properties": {
+                        "priority": 305,
+                        "protocol": "TCP",
+                        "access": "Allow",
+                        "direction": "Inbound",
+                        "sourceAddressPrefix": "*",
+                        "sourcePortRange": "*",
+                        "destinationAddressPrefix": "*",
+                        "destinationPortRange": "27018"
+                    }
+                }
+            ]
+        },
+        "subnetNamePriv": {
+            "value": "Acceptance-privateSubnet"
+        },
+        "subnetNamePub": {
+            "value": "Acceptance-publicSubnet"
+        },
+        "virtualNetworkName": {
+            "value": "Acceptance-group-vnet"
+        },
+        "addressPrefixes": {
+            "value": [
+                "10.1.0.0/16"
+            ]
+        },
+        "subnets": {
+            "value": [
+                {
+                    "name": "default",
+                    "properties": {
+                        "addressPrefix": "10.1.0.0/24"
+                    }
+                },
+                {
+                    "name": "Acceptance-privatesubnet",
+                    "properties": {
+                        "addressPrefix": "10.1.10.0/24"
+                    }
+                },
+                {
+                    "name": "Acceptance-publicsubnet",
+                    "properties": {
+                        "addressPrefix": "10.1.20.0/24"
+                    }
+                },
+                {
+                    "name": "AzureBastionSubnet",
+                    "properties": {
+                        "addressPrefix": "10.1.1.0/26"
+                    }
+                }
+            ]
+        },
+        "bastion-host-name": {
+            "value": "Acceptance-basiton-host"
+        },
+        "publicIpAddressName": {
+            "value": "Acceptance-nginx-pip"
+        },
+        "publicIpAddressNameBastion": {
+            "value": "Acceptance-bastion-pip"
+        },
+        "publicIpAddressType": {
+            "value": "static"
+        },
+        "publicIpAddressSku": {
+            "value": "standard"
+        },
+        "virtualMachineNameNginx": {
+            "value": "Acceptance-vmreverseproxy"
+        },
+        "virtualMachineNameMongo": {
+            "value": "Acceptance-vmmongodb"
+        },
+        "osDiskType": {
+            "value": "Standard_LRS"
+        },
+        "adminUsername": {
+            "value": "developer"
+        },
+        "adminPassword": {
+            "value": "developer@123"
+        },
+        "customDataNginx": {
+            "value": "I2Nsb3VkLWNvbmZpZwpwYWNrYWdlX3VwZ3JhZGU6IHRydWUKcGFja2FnZXM6CiAgLSBuZ2lueAp3cml0ZV9maWxlczoKICAtIG93bmVyOiB3d3ctZGF0YTp3d3ctZGF0YQogICAgcGF0aDogL2V0Yy9uZ2lueC9zaXRlcy1hdmFpbGFibGUvZGVmYXVsdAogICAgY29udGVudDogfAogICAgICBzZXJ2ZXIgewogICAgICAgIGxpc3RlbiA4MDsKICAgICAgICBsb2NhdGlvbiAvIHsKICAgICAgICAgIHByb3h5X3Bhc3MgaHR0cDovL2xvY2FsaG9zdDozMDAwOwogICAgICAgICAgcHJveHlfaHR0cF92ZXJzaW9uIDEuMTsKICAgICAgICAgIHByb3h5X3NldF9oZWFkZXIgVXBncmFkZSAkaHR0cF91cGdyYWRlOwogICAgICAgICAgcHJveHlfc2V0X2hlYWRlciBDb25uZWN0aW9uIGtlZXAtYWxpdmU7CiAgICAgICAgICBwcm94eV9zZXRfaGVhZGVyIEhvc3QgJGhvc3Q7CiAgICAgICAgICBwcm94eV9jYWNoZV9ieXBhc3MgJGh0dHBfdXBncmFkZTsKICAgICAgICB9CiAgICAgIH0KcnVuY21kOgogIC0gc2VydmljZSBuZ2lueCByZXN0YXJ0"
+        },
+        "customDataMongo": {
+            "value": "I2Nsb3VkLWNvbmZpZwp5dW1fcmVwb3M6CiAgbW9uZ29kYi1vcmctNS4wOgogICAgbmFtZTogTW9uZ29EQiBSZXBvc2l0b3J5CiAgICBiYXNldXJsOiBodHRwczovL3JlcG8ubW9uZ29kYi5vcmcveXVtL3JlZGhhdC8kcmVsZWFzZXZlci9tb25nb2RiLW9yZy81LjAveDg2XzY0LwogICAgZ3BnY2hlY2s6IDEKICAgIGVuYWJsZWQ6IDEKICAgIGdwZ2tleTogaHR0cHM6Ly93d3cubW9uZ29kYi5vcmcvc3RhdGljL3BncC9zZXJ2ZXItNS4wLmFzYwpwYWNrYWdlX3VwZ3JhZGU6IHRydWUKcGFja2FnZXM6CiAgLSBtb25nb2RiLW9yZwpydW5jbWQ6CiAgLSBzZXJ2aWNlIG1vbmdvZGIgc3RhcnQ="
+        },
+        "rgLocation": {
+            "value": "westeurope"
+        },
+        "vmSizeNginx": {
+            "value": "Standard_DS1_v2"
+          },
+        "vmSize": {
+            "value": "Standard_A1_v2"
+        },
+        "sftpPassword": {
+            "value": "developer@123"
+        },
+        "vmssName": {
+            "value": "Acceptance-PublicReverseProxy"
+        },
+        "platformFaultDomainCount": {
+            "value": "1"
+        },
+        "autoScaleDefault": {
+            "value": "1"
+        },
+        "autoScaleMin": {
+            "value": "1"
+        },
+        "autoScaleMax": {
+            "value": "3"
+        },
+        "scaleOutCPUPercentageThreshold": {
+            "value": "70"
+        },
+        "durationTimeWindow": {
+            "value": "5"
+        },
+        "scaleOutInterval": {
+            "value": "1"
+        },
+        "scaleInCPUPercentageThreshold": {
+            "value": "30"
+        },
+        "scaleInInterval": {
+            "value": "1"
+        },
+        "subscriptionId": {
+            "value": "b916fca9-a198-47fe-a828-b07680d25619"
+        },
+        "name_app": {
+            "value": "Acceptance-appfortestngix"
+        },
+        "hostingPlanName": {
+            "value": "Nodejs-apptest-bbf8"
+        },
+        "alwaysOn": {
+            "value": false
+        },
+        "sku": {
+            "value": "Basic"
+        },
+        "skuCode": {
+            "value": "B1"
+        },
+        "workerSize": {
+            "value": "0"
+        },
+        "workerSizeId": {
+            "value": "0"
+        },
+        "numberOfWorkers": {
+            "value": "1"
+        },
+        "linuxFxVersion": {
+            "value": "NODE|14-lts"
+        },
+        "environment": {
+            "value": "Acceptance"
+        },
+        "tags": {
+            "value": [
+                {
+                    "environment": "Acceptance"
+                }
+            ]
+        },
+        "rgName": {
+            "value": "AcceptanceRG"
+        },
+        "fileShareName": {
+            "value": "Acceptancesftpfileshare"
+        },
+        "storageAccountPrefix": {
+            "value": "Acceptancesftpstg"
+        },
+        "privateEndpoint_name": {
+            "value": "Acceptance-mongo-app"
+        },
+        "privateLinkConnection_name": {
+            "value": "Acceptance-app-privateendpoint"
+        },
+        "privateDNSZone_name": {
+            "value": "privatelink.azurewebsites.net"
+        },
+        "storageAccountNamePrefix": {
+            "value": "GEN-UNIQUE-8"
+        },
+        "storageAccountType": {
+            "value": "Standard_LRS"
+        },
+        "vmSeries": {
+            "value": "D"
+        },
+        "tshirtSize": {
+            "value": "XSmall"
+        },
+        "osFamily": {
+            "value": "Ubuntu"
+        },
+        "replicaSetName": {
+            "value": "rs0"
+        },
+        "replicaSetKey": {
+            "value": "GEN-UNIQUE-8"
+        }
+    }
+}

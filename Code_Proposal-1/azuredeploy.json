@@ -1,0 +1,1295 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "networkInterfaceNameNginx": {
+      "type": "string"
+    },
+    "networkInterfaceNameMongo": {
+      "type": "string"
+    },
+    "enableAcceleratedNetworking": {
+      "type": "bool"
+    },
+    "networkSecurityGroupNamePrivate": {
+      "type": "string"
+    },
+    "networkSecurityGroupNamePublic": {
+      "type": "string"
+    },
+    "networkSecurityGroupRulesPrivate": {
+      "type": "array"
+    },
+    "subnetNamePriv": {
+      "type": "string"
+    },
+    "subnetNamePub": {
+      "type": "string"
+    },
+    "virtualNetworkName": {
+      "type": "string"
+    },
+    "addressPrefixes": {
+      "type": "array"
+    },
+    "subnets": {
+      "type": "array"
+    },
+    "publicIpAddressName": {
+      "type": "string"
+    },
+    "publicIpAddressNameBastion": {
+      "type": "string"
+    },
+    "publicIpAddressType": {
+      "type": "string"
+    },
+    "publicIpAddressSku": {
+      "type": "string"
+    },
+    "virtualMachineNameNginx": {
+      "type": "string"
+    },
+    "osDiskType": {
+      "type": "string"
+    },
+    "adminUsername": {
+      "type": "string"
+    },
+    "adminPassword": {
+      "type": "securestring"
+    },
+    "customDataNginx": {
+      "type": "securestring"
+    },
+    "rgLocation": {
+      "type": "string"
+    },
+    "vmSizeNginx": {
+      "type": "string"
+    },
+    "storageAccountType": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "metadata": {
+        "description": "Storage account type"
+      },
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_ZRS",
+        "Standard_GRS"
+      ]
+    },
+    "storageAccountPrefix": {
+      "type": "string",
+      "defaultValue": "sftpstg",
+      "metadata": {
+        "description": "Prefix for new storage account"
+      }
+    },
+    "fileShareName": {
+      "type": "string",
+      "defaultValue": "sftpfileshare",
+      "metadata": {
+        "description": "Name of file share to be created"
+      }
+    },
+    "sftpUser": {
+      "type": "string",
+      "defaultValue": "sftp",
+      "metadata": {
+        "description": "Username to use for SFTP access"
+      }
+    },
+    "sftpPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Password to use for SFTP access"
+      }
+    },
+    "containerGroupDNSLabel": {
+      "type": "string",
+      "defaultValue": "[uniqueString(resourceGroup().id, deployment().name)]",
+      "metadata": {
+        "description": "DNS label for container group"
+      }
+    },
+    "vmssName": {
+      "type": "string",
+      "metadata": {
+        "description": "String used as a base for naming resources (9 characters or less). A hash is prepended to this string for some resources, and resource-specific information is appended."
+      }
+    },
+    "instanceCount": {
+      "type": "int",
+      "defaultValue": "1",
+      "minValue": 1,
+      "maxValue": 3,
+      "metadata": {
+        "description": "Number of VM instances (3 or less)."
+      }
+    },
+    "bastion-host-name": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of Azure Bastion resource"
+      }
+    },
+    "bastion-subnet-ip-prefix": {
+      "type": "string",
+      "defaultValue": "10.1.1.0/26",
+      "metadata": {
+        "description": "Bastion subnet IP prefix MUST be within vnet IP prefix address space"
+      }
+    },
+    "platformFaultDomainCount": {
+      "type": "string"
+    },
+    "autoScaleDefault": {
+      "type": "string"
+    },
+    "autoScaleMin": {
+      "type": "string"
+    },
+    "autoScaleMax": {
+      "type": "string"
+    },
+    "scaleOutCPUPercentageThreshold": {
+      "type": "string"
+    },
+    "durationTimeWindow": {
+      "type": "string"
+    },
+    "scaleOutInterval": {
+      "type": "string"
+    },
+    "scaleInCPUPercentageThreshold": {
+      "type": "string"
+    },
+    "scaleInInterval": {
+      "type": "string"
+    },
+    "subscriptionId": {
+      "type": "string"
+    },
+    "name_app": {
+      "type": "string"
+    },
+    "hostingPlanName": {
+      "type": "string"
+    },
+    "alwaysOn": {
+      "type": "bool"
+    },
+    "sku": {
+      "type": "string"
+    },
+    "skuCode": {
+      "type": "string"
+    },
+    "workerSize": {
+      "type": "string"
+    },
+    "workerSizeId": {
+      "type": "string"
+    },
+    "numberOfWorkers": {
+      "type": "string"
+    },
+    "linuxFxVersion": {
+      "type": "string"
+    },
+    "environment": {
+      "type": "string",
+      "allowedValues": [
+        "test",
+        "acceptance",
+        "production"
+      ]
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {}
+    },
+    "rgName": {
+      "type": "string"
+    },
+    "privateEndpoint_name": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of your Private Endpoint"
+      }
+    },
+    "privateLinkConnection_name": {
+      "type": "string",
+      "metadata": {
+        "description": "Link name between your Private Endpoint and your Web App"
+      }
+    },
+    "privateDNSZone_name": {
+      "type": "string",
+      "defaultValue": "privatelink.azurewebsites.net",
+      "metadata": {
+        "description": "Name must be privatelink.azurewebsites.net"
+      }
+    },
+    "storageAccountNamePrefix": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Unique namespace for the Storage Account where the Virtual Machine's disks will be placed (this name will be used as a prefix to create one or more storage accounts as per t-shirt size)"
+      }
+    },
+    "vmSeries": {
+      "type": "string",
+      "defaultValue": "D",
+      "allowedValues": [
+        "D",
+        "DS"
+      ],
+      "metadata": {
+        "description": "Virtual machine series to use for data nodes in cluster"
+      }
+    },
+    "nodeAddressPrefix": {
+      "type": "string",
+      "defaultValue": "10.1.20.10",
+      "metadata": {
+        "description": "The IP address prefix that will be used for constructing a static private IP address for each node in the cluster"
+      }
+    },
+    "tshirtSize": {
+      "type": "string",
+      "defaultValue": "XSmall",
+      "allowedValues": [
+        "XSmall",
+        "Small",
+        "Medium",
+        "Large",
+        "XLarge",
+        "XXLarge"
+      ],
+      "metadata": {
+        "description": "T-shirt size of the MongoDB deployment"
+      }
+    },
+    "osFamily": {
+      "type": "string",
+      "defaultValue": "Ubuntu",
+      "allowedValues": [
+        "Ubuntu"
+      ],
+      "metadata": {
+        "description": "The target OS for the virtual machines running MongoDB"
+      }
+    },
+    "replicaSetName": {
+      "type": "string",
+      "defaultValue": "rs0",
+      "metadata": {
+        "description": "The name of the MongoDB replica set"
+      }
+    },
+    "replicaSetKey": {
+      "type": "string",
+      "metadata": {
+        "description": "The shared secret key for the MongoDB replica set"
+      }
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "defaultValue": "[deployment().properties.templatelink.uri]",
+      "metadata": {
+        "description": "The base URI where artifacts required by this template are located"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated"
+      }
+    },
+    "subnetPrefix": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "nsgID": "[resourceId(resourceGroup().name, 'Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupNamePrivate'))]",
+    "vnetId": "[resourceId(resourceGroup().name,'Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+    "subnetRefPriv": "[concat(variables('vnetId'), '/subnets/', parameters('subnetNamePriv'))]",
+    "subnetRefPub": "[concat(variables('vnetId'), '/subnets/', parameters('subnetNamePub'))]",
+    "nsg-name": "[concat(parameters('networkSecurityGroupNamePublic'),'-nsg')]",
+    "sftpContainerName": "[concat(parameters('environment'), '-sftp-container')]",
+    "bastion-subnet-name": "AzureBastionSubnet",
+    "sftpContainerGroupName": "[concat(parameters('environment'), '-sftp-group')]",
+    "sftpContainerImage": "atmoz/sftp:debian",
+    "sftpEnvVariable": "[format('{0}:{1}:1001', parameters('sftpUser'), parameters('sftpPassword'))]",
+    "storageAccountName": "[take(toLower(format('{0}{1}', parameters('storageAccountPrefix'), uniqueString(resourceGroup().id))), 24)]",
+    "loadBalancerName": "[concat (parameters('vmssName'), '-lb')]",
+    "publicIPAddressID": "[resourceId('Microsoft.Network/publicIPAddresses',parameters('publicIPAddressName'))]",
+    "bePoolName": "[concat(parameters('vmssName'), '-bepool')]",
+    "loadBalancerFrontEndName": "[concat(parameters('environment'), '-LoadBalancerFrontEnd')]",
+    "loadBalancerProbeName": "[concat(parameters('environment'), '-loadBalancerHttpProbe')]",
+    "vmssId": "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('vmssName'))]",
+    "lbSkuName": "Standard",
+    "networkApiVersion": "2020-11-01",
+    "virtualMachineScaleSetApiVersion": "2021-04-01",
+    "autoScaleResourceName": "[concat(parameters('vmssName'), '-autoscale')]",
+    "osFamily": {
+      "Ubuntu": {
+        "osName": "ubuntu",
+        "installerBaseUrl": "http://repo.mongodb.org/apt/ubuntu",
+        "installerPackages": "mongodb-org",
+        "installerVersion": "4.0.2",
+        "imagePublisher": "Cononical",
+        "imageOffer": "UbuntuServer",
+        "imageSKU": "14.04.5-LTS"
+      }
+    },
+    "tshirtSizeTypes": {
+      "XSmall": {
+        "vmSizeMember": "[concat('Standard_', parameters('vmSeries'), '1_v2')]",
+        "vmSizeArbiter": "[concat('Standard_', parameters('vmSeries'), '1_v2')]",
+        "numberOfMembers": 1,
+        "totalMemberCount": 2,
+        "arbiter": "Enabled",
+        "vmTemplate": "[uri(parameters('_artifactsLocation'), concat('member-resources-D1.json', parameters('_artifactsLocationSasToken')))]",
+        "storageAccountCount": 1,
+        "dataDiskSize": 128
+      },
+      "Small": {
+        "vmSizeMember": "[concat('Standard_', parameters('vmSeries'), '1_v2')]",
+        "vmSizeArbiter": "[concat('Standard_', parameters('vmSeries'), '1_v2')]",
+        "numberOfMembers": 2,
+        "totalMemberCount": 3,
+        "arbiter": "Enabled",
+        "vmTemplate": "[uri(parameters('_artifactsLocation'), concat('member-resources-D1.json', parameters('_artifactsLocationSasToken')))]",
+        "storageAccountCount": 1,
+        "dataDiskSize": 128
+      },
+      "Medium": {
+        "vmSizeMember": "[concat('Standard_', parameters('vmSeries'), '2_v2')]",
+        "vmSizeArbiter": "[concat('Standard_', parameters('vmSeries'), '1_v2')]",
+        "numberOfMembers": 3,
+        "totalMemberCount": 4,
+        "arbiter": "Enabled",
+        "vmTemplate": "[uri(parameters('_artifactsLocation'), concat('member-resources-D2.json', parameters('_artifactsLocationSasToken')))]",
+        "storageAccountCount": 2,
+        "dataDiskSize": 256
+      },
+      "Large": {
+        "vmSizeMember": "[concat('Standard_', parameters('vmSeries'), '2_v2')]",
+        "vmSizeArbiter": "[concat('Standard_', parameters('vmSeries'), '1_v2')]",
+        "numberOfMembers": 7,
+        "totalMemberCount": 8,
+        "arbiter": "Enabled",
+        "vmTemplate": "[uri(parameters('_artifactsLocation'), concat('member-resources-D2.json', parameters('_artifactsLocationSasToken')))]",
+        "storageAccountCount": 4,
+        "dataDiskSize": 256
+      },
+      "XLarge": {
+        "vmSizeMember": "[concat('Standard_', parameters('vmSeries'), '3_v2')]",
+        "vmSizeArbiter": "[concat('Standard_', parameters('vmSeries'), '1_v2')]",
+        "numberOfMembers": 7,
+        "totalMemberCount": 8,
+        "arbiter": "Enabled",
+        "vmTemplate": "[uri(parameters('_artifactsLocation'), concat('member-resources-D3.json', parameters('_artifactsLocationSasToken')))]",
+        "storageAccountCount": 4,
+        "dataDiskSize": 512
+      },
+      "XXLarge": {
+        "vmSizeMember": "[concat('Standard_', parameters('vmSeries'), '3_v2')]",
+        "vmSizeArbiter": "[concat('Standard_', parameters('vmSeries'), '1_v2')]",
+        "numberOfMembers": 15,
+        "totalMemberCount": 15,
+        "arbiter": "Enabled",
+        "vmTemplate": "[uri(parameters('_artifactsLocation'), concat('member-resources-D3.json', parameters('_artifactsLocationSasToken')))]",
+        "storageAccountCount": 8,
+        "dataDiskSize": 512
+      }
+    },
+    "vmStorageAccountContainerName": "vhd-mongodb",
+    "sharedScriptUrl": "[concat('https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/shared_scripts/', variables('osFamilySpec').osName, '/')]",
+    "arbiterTemplate": {
+      "Enable": "arbiter-resources.json",
+      "Disabled": "empty-resources.json"
+    },
+    "sharedTemplateUrl": "[uri(parameters('_artifactsLocation'), concat('shared-resources.json', parameters('_artifactsLocationSasToken')))]",
+    "arbiterTemplateUrl": "[uri(parameters('_artifactsLocation'), concat(variables('arbiterTemplate')[variables('clusterSpec').arbiter], parameters('_artifactsLocationSasToken')))]",
+    "commonSettings": {
+      "availabilitySetName": "mongodbAvailSet"
+    },
+    "storageSettings": {
+      "vhdStorageAccountName": "[parameters('storageAccountNamePrefix')]",
+      "vhdContainerName": "[variables('vmStorageAccountContainerName')]",
+      "vmSeries": "[parameters('vmSeries')]",
+      "destinationVhdsContainer": "[concat('https://', parameters('storageAccountNamePrefix'), environment().suffixes.storage, '/', variables('vmStorageAccountContainerName'), '/')]",
+      "storageAccountCount": "[variables('clusterSpec').storageAccountCount]",
+      "storageAccountType": "[parameters('storageAccountType')]"
+    },
+    "networkSettings": {
+      "virtualNetworkName": "[parameters('virtualNetworkName')]",
+      "addressPrefix": "[parameters('addressPrefixes')]",
+      "subnetName": "[parameters('subnetNamePub')]",
+      "subnetPrefix": "[parameters('subnetPrefix')]",
+      "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'),  parameters('subnetNamePriv'))]",
+      "machineIpPrefix": "[parameters('nodeAddressPrefix')]"
+    },
+    "machineSettings": {
+      "adminUsername": "[parameters('adminUsername')]",
+      "adminPassword": "[parameters('adminPassword')]",
+      "machineNamePrefix": "mongodb-",
+      "osImageReference": {
+        "publisher": "[variables('osFamilySpec').imagePublisher]",
+        "offer": "[variables('osFamilySpec').imageOffer]",
+        "sku": "[variables('osFamilySpec').imageSKU]",
+        "version": "latest"
+      }
+    },
+    "clusterSpec": "[variables('tshirtSizeTypes')[parameters('tshirtSize')]]",
+    "osFamilySpec": "[variables('osFamily')[parameters('osFamily')]]",
+    "installCommand": "[concat('bash mongodb-', variables('osFamilySpec').osName, '-install.sh', ' -i ', variables('osFamilySpec').installerBaseUrl, ' -b ', variables('osFamilySpec').installerPackages, ' -v ', variables('osFamilySpec').installerVersion , ' -r ', parameters('replicaSetName'), ' -k ', parameters('replicaSetKey'), ' -u ', parameters('adminUsername'), ' -p ', parameters('adminPassword'), ' -x ', variables('networkSettings').machineIpPrefix, ' -n ', variables('clusterSpec').totalMemberCount)]",
+    "vmScripts": {
+      "scriptsToDownload": [
+        "[uri(parameters('_artifactsLocation'), concat('mongodb-', variables('osFamilySpec').osName, '-install.sh', parameters('_artifactsLocationSasToken')))]",
+        "[concat(variables('sharedScriptUrl'), 'vm-disk-utils-0.1.sh')]"
+      ],
+      "regularNodeInstallCommand": "[variables('installCommand')]",
+      "lastNodeInstallCommand": "[concat(variables('installCommand'), ' -l')]",
+      "arbiterNodeInstallCommand": "[concat(variables('installCommand'), ' -a')]"
+    }
+  },
+  "resources": [
+    {
+      "apiVersion": "2020-11-01",
+      "type": "Microsoft.Network/virtualNetworks/subnets",
+      "name": "[concat(parameters('virtualNetworkName'), '/', variables('bastion-subnet-name'))]",
+      "location": "[parameters('rgLocation')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg-name'))]"
+      ],
+      "properties": {
+        "addressPrefix": "[parameters('bastion-subnet-ip-prefix')]",
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg-name'))]"
+        }
+      }
+    },
+    {
+      "apiVersion": "2020-08-01",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[variables('nsg-name')]",
+      "location": "[parameters('rgLocation')]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "AllowHttpsInBound",
+            "properties": {
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "Internet",
+              "destinationPortRange": "443",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "AllowGatewayManagerInBound",
+            "properties": {
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "GatewayManager",
+              "destinationPortRange": "443",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 110,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "AllowLoadBalancerInBound",
+            "properties": {
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "AzureLoadBalancer",
+              "destinationPortRange": "443",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 120,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "AllowBastionHostCommunicationInBound",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "VirtualNetwork",
+              "destinationPortRanges": [
+                "8080",
+                "5701"
+              ],
+              "destinationAddressPrefix": "VirtualNetwork",
+              "access": "Allow",
+              "priority": 130,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "DenyAllInBound",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationPortRange": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Deny",
+              "priority": 1000,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "AllowSshRdpOutBound",
+            "properties": {
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationPortRanges": [
+                "22",
+                "3389"
+              ],
+              "destinationAddressPrefix": "VirtualNetwork",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "AllowAzureCloudCommunicationOutBound",
+            "properties": {
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationPortRange": "443",
+              "destinationAddressPrefix": "AzureCloud",
+              "access": "Allow",
+              "priority": 110,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "AllowBastionHostCommunicationOutBound",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "VirtualNetwork",
+              "destinationPortRanges": [
+                "8080",
+                "5701"
+              ],
+              "destinationAddressPrefix": "VirtualNetwork",
+              "access": "Allow",
+              "priority": 120,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "AllowGetSessionInformationOutBound",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "Internet",
+              "destinationPortRanges": [
+                "80",
+                "443"
+              ],
+              "access": "Allow",
+              "priority": 130,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "DenyAllOutBound",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Deny",
+              "priority": 1000,
+              "direction": "Outbound"
+            }
+          }
+        ]
+      },
+      "tags": "[parameters('tags')]"
+    },
+    {
+      "name": "[parameters('publicIpAddressNameBastion')]",
+      "type": "Microsoft.Network/publicIpAddresses",
+      "apiVersion": "2019-02-01",
+      "location": "[parameters('rgLocation')]",
+      "properties": {
+        "publicIpAllocationMethod": "[parameters('publicIpAddressType')]",
+        "dnsSettings": {
+          "domainNameLabel": "bastion34567"
+        }
+      },
+      "sku": {
+        "name": "[parameters('publicIpAddressSku')]"
+      },
+      "tags": "[parameters('tags')]"
+    },
+    {
+      "name": "[parameters('networkInterfaceNameMongo')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2020-11-01",
+      "location": "[parameters('rgLocation')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkSecurityGroups/', parameters('networkSecurityGroupNamePrivate'))]",
+        "[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "vmmongodb",
+            "properties": {
+              "subnet": {
+                "id": "[variables('subnetRefPriv')]"
+              },
+              "privateIPAllocationMethod": "Dynamic"
+            }
+          }
+        ],
+        "enableAcceleratedNetworking": "[parameters('enableAcceleratedNetworking')]",
+        "networkSecurityGroup": {
+          "id": "[variables('nsgId')]"
+        }
+      },
+      "tags": "[parameters('tags')]"
+    },
+    {
+      "apiVersion": "2020-08-01",
+      "type": "Microsoft.Network/bastionHosts",
+      "name": "[parameters('bastion-host-name')]",
+      "location": "[parameters('rgLocation')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkSecurityGroups/', variables('nsg-name'))]",
+        "[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]",
+        "[resourceId(parameters('rgName'), 'Microsoft.Network/publicIpAddresses', parameters('publicIpAddressName'))]"
+      ],
+      "sku": {
+        "name": "[parameters('publicIpAddressSku')]"
+      },
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "IpConf",
+            "properties": {
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), variables('bastion-subnet-name'))]"
+              },
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIpAddresses', parameters('publicIpAddressNameBastion'))]"
+              }
+            }
+          }
+        ]
+      },
+      "tags": "[parameters('tags')]"
+    },
+    {
+      "name": "[parameters('networkSecurityGroupNamePrivate')]",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2019-02-01",
+      "location": "[parameters('rgLocation')]",
+      "properties": {
+        "securityRules": "[parameters('networkSecurityGroupRulesPrivate')]"
+      },
+      "tags": "[parameters('tags')]"
+    },
+    {
+      "name": "[parameters('virtualNetworkName')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2020-11-01",
+      "location": "[parameters('rgLocation')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": "[parameters('addressPrefixes')]"
+        },
+        "subnets": "[parameters('subnets')]"
+      },
+      "tags": "[parameters('tags')]"
+    },
+    {
+      "name": "[parameters('publicIpAddressName')]",
+      "type": "Microsoft.Network/publicIpAddresses",
+      "apiVersion": "2019-02-01",
+      "location": "[parameters('rgLocation')]",
+      "properties": {
+        "publicIpAllocationMethod": "[parameters('publicIpAddressType')]",
+        "dnsSettings": {
+          "domainNameLabel": "reverseproxy"
+        }
+      },
+      "sku": {
+        "name": "[parameters('publicIpAddressSku')]"
+      },
+      "tags": "[parameters('tags')]"
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2019-06-01",
+      "name": "[variables('storageAccountName')]",
+      "location": "[parameters('rgLocation')]",
+      "kind": "StorageV2",
+      "sku": {
+        "name": "[parameters('storageAccountType')]"
+      },
+      "tags": "[parameters('tags')]"
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+      "apiVersion": "2019-06-01",
+      "name": "[toLower(format('{0}/default/{1}', variables('storageAccountName'), parameters('fileShareName')))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2019-12-01",
+      "name": "[variables('sftpContainerGroupName')]",
+      "location": "[parameters('rgLocation')]",
+      "properties": {
+        "containers": [
+          {
+            "name": "[variables('sftpContainerName')]",
+            "properties": {
+              "image": "[variables('sftpContainerImage')]",
+              "environmentVariables": [
+                {
+                  "name": "SFTP_USERS",
+                  "secureValue": "[variables('sftpEnvVariable')]"
+                }
+              ],
+              "resources": {
+                "requests": {
+                  "cpu": 1,
+                  "memoryInGB": 1
+                }
+              },
+              "ports": [
+                {
+                  "port": 22,
+                  "protocol": "TCP"
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "mountPath": "[format('/home/{0}/upload', parameters('sftpUser'))]",
+                  "name": "sftpvolume",
+                  "readOnly": false
+                }
+              ]
+            }
+          }
+        ],
+        "osType": "Linux",
+        "ipAddress": {
+          "type": "Public",
+          "ports": [
+            {
+              "port": 22,
+              "protocol": "TCP"
+            }
+          ],
+          "dnsNameLabel": "[parameters('containerGroupDNSLabel')]"
+        },
+        "restartPolicy": "OnFailure",
+        "volumes": [
+          {
+            "name": "sftpvolume",
+            "azureFile": {
+              "readOnly": false,
+              "shareName": "[parameters('fileShareName')]",
+              "storageAccountName": "[variables('storageAccountName')]",
+              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value]"
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+      ],
+      "tags": "[parameters('tags')]"
+    },
+    {
+      "type": "Microsoft.Network/loadBalancers",
+      "apiVersion": "2020-06-01",
+      "name": "[variables('loadBalancerName')]",
+      "location": "[parameters('rgLocation')]",
+      "sku": {
+        "name": "[variables('lbSkuName')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddressName'))]"
+      ],
+      "properties": {
+        "frontendIPConfigurations": [
+          {
+            "name": "[variables('loadBalancerFrontEndName')]",
+            "properties": {
+              "publicIPAddress": {
+                "id": "[variables('publicIPAddressID')]"
+              }
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "[variables('bePoolName')]"
+          }
+        ],
+        "loadBalancingRules": [
+          {
+            "name": "roundRobinLBRule",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', variables('loadBalancerName'), variables('loadBalancerFrontEndName'))]"
+              },
+              "backendAddressPool": {
+                "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('loadBalancerName'), variables('bePoolName'))]"
+              },
+              "protocol": "Tcp",
+              "frontendPort": 80,
+              "backendPort": 80,
+              "enableFloatingIP": false,
+              "idleTimeoutInMinutes": 5,
+              "probe": {
+                "id": "[resourceId('Microsoft.Network/loadBalancers/probes', variables('loadBalancerName'), variables('loadBalancerProbeName'))]"
+              }
+            }
+          }
+        ]
+      },
+      "tags": "[parameters('tags')]"
+    },
+    {
+      "type": "Microsoft.Insights/autoscaleSettings",
+      "apiVersion": "2015-04-01",
+      "name": "[variables('autoScaleResourceName')]",
+      "location": "[parameters('rgLocation')]",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachineScaleSets/', parameters('vmssName'))]"
+      ],
+      "properties": {
+        "name": "[variables('autoScaleResourceName')]",
+        "targetResourceUri": "[variables('vmssId')]",
+        "enabled": true,
+        "profiles": [
+          {
+            "name": "Profile1",
+            "capacity": {
+              "minimum": "[parameters('autoScaleMin')]",
+              "maximum": "[parameters('autoScaleMax')]",
+              "default": "[parameters('autoScaleDefault')]"
+            },
+            "rules": [
+              {
+                "metricTrigger": {
+                  "metricName": "Percentage CPU",
+                  "metricNamespace": "",
+                  "metricResourceUri": "[variables('vmssId')]",
+                  "timeGrain": "PT1M",
+                  "statistic": "Average",
+                  "timeWindow": "[concat('PT', parameters('durationTimeWindow'), 'M')]",
+                  "timeAggregation": "Average",
+                  "operator": "GreaterThan",
+                  "threshold": "[parameters('scaleOutCPUPercentageThreshold')]"
+                },
+                "scaleAction": {
+                  "direction": "Increase",
+                  "type": "ChangeCount",
+                  "value": "[parameters('scaleOutInterval')]",
+                  "cooldown": "PT1M"
+                }
+              },
+              {
+                "metricTrigger": {
+                  "metricName": "Percentage CPU",
+                  "metricNamespace": "",
+                  "metricResourceUri": "[variables('vmssId')]",
+                  "timeGrain": "PT1M",
+                  "statistic": "Average",
+                  "timeWindow": "PT5M",
+                  "timeAggregation": "Average",
+                  "operator": "LessThan",
+                  "threshold": "[parameters('scaleInCPUPercentageThreshold')]"
+                },
+                "scaleAction": {
+                  "direction": "Decrease",
+                  "type": "ChangeCount",
+                  "value": "[parameters('scaleInInterval')]",
+                  "cooldown": "PT1M"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "[parameters('vmssName')]",
+      "type": "Microsoft.Compute/virtualMachineScaleSets",
+      "apiVersion": "[variables('virtualMachineScaleSetApiVersion')]",
+      "location": "[parameters('rgLocation')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkSecurityGroups/', variables('nsg-name'))]"
+      ],
+      "properties": {
+        "singlePlacementGroup": false,
+        "virtualMachineProfile": {
+          "storageProfile": {
+            "osDisk": {
+              "createOption": "fromImage",
+              "caching": "ReadWrite",
+              "managedDisk": {
+                "storageAccountType": "[parameters('osDiskType')]"
+              }
+            },
+            "imageReference": {
+              "publisher": "canonical",
+              "offer": "0001-com-ubuntu-server-focal",
+              "sku": "20_04-lts-gen2",
+              "version": "latest"
+            }
+          },
+          "networkProfile": {
+            "networkApiVersion": "[variables('networkApiVersion')]",
+            "networkInterfaceConfigurations": [
+              {
+                "name": "[parameters('networkInterfaceNameNginx')]",
+                "properties": {
+                  "primary": true,
+                  "enableAcceleratedNetworking": false,
+                  "ipConfigurations": [
+                    {
+                      "name": "vmssipconfig",
+                      "properties": {
+                        "subnet": {
+                          "id": "[variables('subnetRefPub')]"
+                        },
+                        "primary": true,
+                        "loadBalancerBackendAddressPools": [
+                          {
+                            "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('loadBalancerName'), variables('bePoolName'))]"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "extensionProfile": {
+            "extensions": []
+          },
+          "diagnosticsProfile": {
+            "bootDiagnostics": {
+              "enabled": true
+            }
+          },
+          "osProfile": {
+            "computerNamePrefix": "[parameters('virtualMachineNameNginx')]",
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]",
+            "linuxConfiguration": {
+              "disablePasswordAuthentication": false,
+              "patchSettings": {
+                "patchMode": "ImageDefault"
+              }
+            },
+            "customData": "[parameters('customDataNginx')]"
+          }
+        },
+        "orchestrationMode": "Flexible",
+        "platformFaultDomainCount": "[parameters('platformFaultDomainCount')]"
+      },
+      "sku": {
+        "name": "[parameters('vmSizeNginx')]",
+        "capacity": "[int(parameters('instanceCount'))]"
+      },
+      "tags": "[parameters('tags')]"
+    },
+    {
+      "apiVersion": "2018-11-01",
+      "name": "[parameters('name_app')]",
+      "type": "Microsoft.Web/sites",
+      "location": "[parameters('rgLocation')]",
+      "dependsOn": [
+        "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
+      ],
+      "properties": {
+        "name": "[parameters('name_app')]",
+        "siteConfig": {
+          "appSettings": [],
+          "linuxFxVersion": "[parameters('linuxFxVersion')]",
+          "alwaysOn": "[parameters('alwaysOn')]"
+        },
+        "serverFarmId": "[concat('/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', parameters('rgName'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+        "clientAffinityEnabled": false
+      },
+      "tags": "[parameters('tags')]"
+    },
+    {
+      "apiVersion": "2020-12-01",
+      "name": "[parameters('hostingPlanName')]",
+      "type": "Microsoft.Web/serverfarms",
+      "location": "[parameters('rgLocation')]",
+      "kind": "linux",
+      "tags": {
+        "name": "app"
+      },
+      "dependsOn": [],
+      "properties": {
+        "name": "[parameters('hostingPlanName')]",
+        "workerSize": "[parameters('workerSize')]",
+        "workerSizeId": "[parameters('workerSizeId')]",
+        "numberOfWorkers": "[parameters('numberOfWorkers')]",
+        "reserved": true,
+        "zoneRedundant": false
+      },
+      "sku": {
+        "Tier": "[parameters('sku')]",
+        "Name": "[parameters('skuCode')]"
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateEndpoints",
+      "apiVersion": "2019-04-01",
+      "name": "[parameters('privateEndpoint_name')]",
+      "location": "[parameters('rgLocation')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('name_app'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]"
+      ],
+      "properties": {
+        "subnet": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetNamePub'))]"
+        },
+        "privateLinkServiceConnections": [
+          {
+            "name": "[parameters('privateLinkConnection_name')]",
+            "properties": {
+              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites', parameters('name_app'))]",
+              "groupIds": [
+                "sites"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateDnsZones",
+      "apiVersion": "2018-09-01",
+      "name": "[parameters('privateDNSZone_name')]",
+      "location": "global",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]"
+      ],
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+      "apiVersion": "2018-09-01",
+      "name": "[concat(parameters('privateDNSZone_name'), '/', parameters('privateDNSZone_name'), '-link')]",
+      "location": "global",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDNSZone_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]"
+      ],
+      "properties": {
+        "registrationEnabled": false,
+        "virtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+      "apiVersion": "2020-03-01",
+      "name": "[concat(parameters('privateEndpoint_name'),'/dnsgroupname')]",
+      "location": "[parameters('rgLocation')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDNSZone_name'))]",
+        "[resourceId('Microsoft.Network/privateEndpoints' , parameters('privateEndpoint_name'))]"
+      ],
+      "properties": {
+        "privateDnsZoneConfigs": [
+          {
+            "name": "config1",
+            "properties": {
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDNSZone_name'))]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "shared-resources",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-06-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('sharedTemplateUrl')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "commonSettings": {
+            "value": "[variables('commonSettings')]"
+          },
+          "storageSettings": {
+            "value": "[variables('storageSettings')]"
+          },
+          "networkSettings": {
+            "value": "[variables('networkSettings')]"
+          },
+          "location": {
+            "value": "[parameters('rgLocation')]"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "name": "[concat('member-resources', copyindex())]",
+      "apiVersion": "2020-06-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments/', 'shared-resources')]"
+      ],
+      "copy": {
+        "name": "memberNodesLoop",
+        "count": "[variables('clusterSpec').numberOfMembers]"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('clusterSpec').vmTemplate]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "commonSettings": {
+            "value": "[variables('commonSettings')]"
+          },
+          "networkSettings": {
+            "value": "[variables('networkSettings')]"
+          },
+          "machineSettings": {
+            "value": {
+              "adminUsername": "[variables('machineSettings').adminUsername]",
+              "adminPassword": "[variables('machineSettings').adminPassword]",
+              "machineNamePrefix": "[variables('machineSettings').machineNamePrefix]",
+              "osImageReference": "[variables('machineSettings').osImageReference]",
+              "vmSize": "[variables('clusterSpec').vmSizeMember]",
+              "dataDiskSize": "[variables('clusterSpec').dataDiskSize]",
+              "machineIndex": "[copyindex()]",
+              "vmScripts": "[variables('vmScripts').scriptsToDownload]",
+              "commandToExecute": "[variables('vmScripts').regularNodeInstallCommand]"
+            }
+          },
+          "location": {
+            "value": "[parameters('rgLocation')]"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "name": "lastmember-resources",
+      "apiVersion": "2020-06-01",
+      "dependsOn": [
+        "memberNodesLoop"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('clusterSpec').vmTemplate]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "commonSettings": {
+            "value": "[variables('commonSettings')]"
+          },
+          "networkSettings": {
+            "value": "[variables('networkSettings')]"
+          },
+          "machineSettings": {
+            "value": {
+              "adminUsername": "[variables('machineSettings').adminUsername]",
+              "adminPassword": "[variables('machineSettings').adminPassword]",
+              "machineNamePrefix": "[variables('machineSettings').machineNamePrefix]",
+              "osImageReference": "[variables('machineSettings').osImageReference]",
+              "vmSize": "[variables('clusterSpec').vmSizeMember]",
+              "dataDiskSize": "[variables('clusterSpec').dataDiskSize]",
+              "machineIndex": "[variables('clusterSpec').numberOfMembers]",
+              "vmScripts": "[variables('vmScripts').scriptsToDownload]",
+              "commandToExecute": "[variables('vmScripts').lastNodeInstallCommand]"
+            }
+          },
+          "location": {
+            "value": "[parameters('rgLocation')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "arbiter-resources",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-06-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments/', 'lastmember-resources')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('arbiterTemplateUrl')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "networkSettings": {
+            "value": "[variables('networkSettings')]"
+          },
+          "machineSettings": {
+            "value": {
+              "adminUsername": "[variables('machineSettings').adminUsername]",
+              "adminPassword": "[variables('machineSettings').adminPassword]",
+              "machineNamePrefix": "[variables('machineSettings').machineNamePrefix]",
+              "osImageReference": "[variables('machineSettings').osImageReference]",
+              "vmSize": "[variables('clusterSpec').vmSizeArbiter]",
+              "vmScripts": "[variables('vmScripts').scriptsToDownload]",
+              "commandToExecute": "[concat(variables('vmScripts').arbiterNodeInstallCommand)]"
+            }
+          },
+          "location": {
+            "value": "[parameters('rgLocation')]"
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "adminUsername": {
+      "type": "string",
+      "value": "[parameters('adminUsername')]"
+    }
+  }
+}
