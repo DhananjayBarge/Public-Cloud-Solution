@@ -1,0 +1,195 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+
+        "networkInterfaceNameNginx": {
+            "value": "prodnginxnic"
+        },
+        "networkSecurityGroupName": {
+            "value": "prod-nsg"
+        },
+        "networkSecurityGroupRules": {
+            "value": [
+                {
+                    "name": "SSH",
+                    "properties": {
+                        "priority": 300,
+                        "protocol": "TCP",
+                        "access": "Allow",
+                        "direction": "Inbound",
+                        "sourceAddressPrefix": "*",
+                        "sourcePortRange": "*",
+                        "destinationAddressPrefix": "*",
+                        "destinationPortRange": "22"
+                    }
+                }
+            ]
+        },
+        "subnetNamePub": {
+            "value": "publicSubnet"
+        },
+        "virtualNetworkName": {
+            "value": "prod-group-vnet"
+        },
+        "addressPrefixes": {
+            "value": [
+                "10.1.0.0/16"
+            ]
+        },
+        "subnets": {
+            "value": [
+                {
+                    "name": "default",
+                    "properties": {
+                        "addressPrefix": "10.1.0.0/24"
+                    }
+                },
+                {
+                    "name": "privatesubnet",
+                    "properties": {
+                        "addressPrefix": "10.1.10.0/24"
+                    }
+                },
+                {
+                    "name": "publicsubnet",
+                    "properties": {
+                        "addressPrefix": "10.1.20.0/24"
+                    }
+                },
+                {
+                    "name": "AzureBastionSubnet",
+                    "properties": {
+                        "addressPrefix": "10.1.1.0/26"
+                    }
+                }
+            ]
+        },
+        "publicIpAddressName": {
+            "value": "prod-lb-pip"
+        },
+        "publicIpAddressType": {
+            "value": "static"
+        },
+        "publicIpAddressSku": {
+            "value": "standard"
+        },
+        "virtualMachineNameNginx": {
+            "value": "prodvmreverseproxy"
+        },
+        "virtualMachineComputerName": {
+            "value": "prodvmreverseproxy"
+        },
+        "osDiskType": {
+            "value": "Standard_LRS"
+        },
+        "osDiskDeleteOption": {
+            "value": "Delete"
+        },
+        "nicDeleteOption": {
+            "value": "Detach"
+        },
+        "adminUsername": {
+            "value": "developer"
+        },
+        "adminPassword": {
+            "value": "developer@123"
+        },
+        "customDataNginx": {
+            "value": "I2Nsb3VkLWNvbmZpZwpwYWNrYWdlX3VwZ3JhZGU6IHRydWUKcGFja2FnZXM6CiAgLSBuZ2lueAp3cml0ZV9maWxlczoKICAtIG93bmVyOiB3d3ctZGF0YTp3d3ctZGF0YQogICAgcGF0aDogL2V0Yy9uZ2lueC9zaXRlcy1hdmFpbGFibGUvZGVmYXVsdAogICAgY29udGVudDogfAogICAgICBzZXJ2ZXIgewogICAgICAgIGxpc3RlbiA4MDsKICAgICAgICBsb2NhdGlvbiAvIHsKICAgICAgICAgIHByb3h5X3Bhc3MgaHR0cDovL2xvY2FsaG9zdDozMDAwOwogICAgICAgICAgcHJveHlfaHR0cF92ZXJzaW9uIDEuMTsKICAgICAgICAgIHByb3h5X3NldF9oZWFkZXIgVXBncmFkZSAkaHR0cF91cGdyYWRlOwogICAgICAgICAgcHJveHlfc2V0X2hlYWRlciBDb25uZWN0aW9uIGtlZXAtYWxpdmU7CiAgICAgICAgICBwcm94eV9zZXRfaGVhZGVyIEhvc3QgJGhvc3Q7CiAgICAgICAgICBwcm94eV9jYWNoZV9ieXBhc3MgJGh0dHBfdXBncmFkZTsKICAgICAgICB9CiAgICAgIH0KcnVuY21kOgogIC0gc2VydmljZSBuZ2lueCByZXN0YXJ0"
+        },
+        "rgLocation": {
+            "value": "westeurope"
+        },
+        "rgName": {
+            "value": "prodRG"
+        },
+        "vmSizeNginx": {
+            "value": "Standard_DS1_v2"
+          },
+        "bastion-host-name": {
+            "value": "prod-basiton-host"
+        },
+        "subscriptionId": {
+            "value": "b916fca9-a198-47fe-a828-b07680d25619"
+        },
+        "name_app": {
+            "value": "prod-appfortestngix"
+        },
+        "hostingPlanName": {
+            "value": "prod-node-apptest-bbf8"
+        },
+        "alwaysOn": {
+            "value": false
+        },
+        "sku": {
+            "value": "Basic"
+        },
+        "skuCode": {
+            "value": "B1"
+        },
+        "workerSize": {
+            "value": "0"
+        },
+        "workerSizeId": {
+            "value": "0"
+        },
+        "numberOfWorkers": {
+            "value": "1"
+        },
+        "linuxFxVersion": {
+            "value": "NODE|14-lts"
+        },
+        "name_db": {
+            "value": "prod-expressjs-mongodb"
+        },
+        "defaultExperience_db": {
+            "value": "Azure Cosmos DB for MongoDB API"
+        },
+        "environment": {
+            "value": "prod"
+        },
+        "vmssName": {
+            "value": "prodPublicReverseProxy"
+        },
+        "platformFaultDomainCount": {
+            "value": "1"
+        },
+        "autoScaleDefault": {
+            "value": "1"
+        },
+        "autoScaleMin": {
+            "value": "1"
+        },
+        "autoScaleMax": {
+            "value": "3"
+        },
+        "publicIpAddressNameBastion": {
+            "value": "prod-bastion-pip"
+        },
+        "scaleOutCPUPercentageThreshold": {
+            "value": "70"
+        },
+        "durationTimeWindow": {
+            "value": "5"
+        },
+        "scaleOutInterval": {
+            "value": "1"
+        },
+        "scaleInCPUPercentageThreshold": {
+            "value": "30"
+        },
+        "scaleInInterval": {
+            "value": "1"
+        },
+        "privateEndpoint_name": {
+            "value": "prod-mongo-app"
+        },
+        "privateLinkConnection_name": {
+            "value": "prod-app-privateendpoint"
+        },
+        "privateDNSZone_name": {
+            "value": "privatelink.azurewebsites.net"
+        }
+    }
+}
